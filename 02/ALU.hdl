@@ -43,4 +43,23 @@ CHIP ALU {
 
     PARTS:
    // Put you code here:
+   Mux16(a=x, b=false, sel=zx, out=m1);
+   Not16(in=m1, out=im1);
+   Mux16(a=m1, b=im1, sel=nx, out=m2);
+   Mux16(a=y, b=false, sel=zy, out=m3);
+   Not16(in=m3, out=im3);
+   Mux16(a=m3, b=im3, sel=ny, out=m4);
+   And16(a=m2, b=m4, out=a1);
+   Add16(a=m2, b=m4, out=a2);
+   Mux16(a=a1, b=a2, sel=f, out=m5);
+   Not16(in=m5, out=im5);
+   Mux16(a=m5, b=im5, sel=no, out=out, out[0..7]=out1, out[8..15]=out2, out[15]=ng);
+   Or8Way(in=out1, out=o1);
+   Or8Way(in=out2, out=o2);
+   Or(a=o1, b=o2, out=o3);
+   Not(in=o3, out=zr);
+   
+   //有參考https://www.youtube.com/watch?v=dGKIZAHTxVk&ab_channel=EugeneCh%27ng
+   //的影片中的ALU圖表
+
 }

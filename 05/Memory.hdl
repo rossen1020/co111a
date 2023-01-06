@@ -28,4 +28,12 @@ CHIP Memory {
 
     PARTS:
     // Put your code here:
+    //參照網站的電路圖製作https://tw511.com/a/01/11445.html#_11
+
+    DMux4Way(in=load, sel=address[13..14], a=a, b=b, c=c, d=d);
+    Or(a=a, b=b, out=o1);
+    RAM16K(in=in, load=o1, address=address[0..13], out=r1);
+    Screen(in=in, address=address[0..12], load=c, out=s);
+    Keyboard(out=k);
+    Mux4Way16(a=r1, b=r1, c=s, d=k, sel=address[13..14], out=out);
 }

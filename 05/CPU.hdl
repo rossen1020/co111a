@@ -40,4 +40,45 @@ CHIP CPU {
 
     PARTS:
     // Put your code here:
+    //參照網站的電路圖製作https://tw511.com/a/01/11445.html#_11
+    
+    Not(in=instruction[15], out=n1);
+    Not(in=n1, out=n2);
+    And(a=n2, b=instruction[5], out=a5);
+
+    Mux16(a=instruction, b=ALU, sel=a5, out=m1);
+    Or(a=n1, b=instruction[5], out=o1);
+    ARegister(in=m1, load=o1, out=AR1, out[0..14]=addressM);
+    Mux16(a=AR1, b=inM, sel=instruction[12], out=m2);
+
+    And(a=n2, b=instruction[3], out=writeM);
+    And(a=instruction[4], b=n2, out=a4);
+    DRegister(in=ALU, load=a4, out=DR1);
+
+    And(a=n2, b=instruction[6], out=a6);
+    And(a=n2, b=instruction[7], out=a7);
+    And(a=n2, b=instruction[8], out=a8);
+    And(a=n2, b=instruction[9], out=a9);
+    And(a=n2, b=instruction[10], out=a10);
+    And(a=n2, b=instruction[11], out=a11);
+
+    ALU(x=DR1, y=m2, no=a6, f=a7, ny=a8, zy=a9, nx=a10, zx=a11,
+      out=ALU, out=outM, zr=zr, ng=ng);
+    
+    And(a=n2, b=instruction[0], out=a0);
+    And(a=n2, b=instruction[1], out=a1);
+    And(a=n2, b=instruction[2], out=a2);
+
+    And(a=zr, b=a1, out=aout2);
+    And(a=ng, b=a2, out=aout3);
+    Or(a=aout2, b=aout3, out=o2);
+
+    Not(in=ng, out=nng);
+    Not(in=zr, out=nzr);
+    And(a=nng, b=nzr, out=anz);
+    And(a=anz, b=a0, out=aout1);
+
+    Or(a=aout1, b=o2, out=o3);
+    
+    PC(in=AR1, reset=reset, inc=true, load=o3, out[0..14] = pc);
 }
